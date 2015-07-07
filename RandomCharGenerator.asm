@@ -14,22 +14,12 @@ main:
 	
 	la $s0, alphabet 		# pointer to alphabet
 
-	li	$v0, 30		# get time in milliseconds 
-	syscall
-	move	$t0, $a0	# save the lower 32-bits of time
-				# seed the random generator 
-	li	$a0, 1		# random generator id (will be used later)
-	move 	$a1, $t0	# seed from time
-	li	$v0, 40		# seed random number generator syscall
-	syscall
+	seedRand()		#utility macro to seed random number generator... uses lower 32-bit of time in milliseconds
 
 	loop:
 	beq $t7, $0, loop2 	# if counter == 0 go to loop2 
 	 				
-	li $a0, 1	
-	li $a1, 26		# generates random number in $a1, with the counter 26 being the upper bound
-	li $v0, 42		# random int range, $a0 contains pseudorandom int value
-	syscall			
+	getRand(1,26,$a0)	#get a random number between 1 and 26 inclusive, store it in $a0	
 
 	add $t1, $s0, $a0 	# add string pointer by random number in $a0, store this new address in $t1
 	
