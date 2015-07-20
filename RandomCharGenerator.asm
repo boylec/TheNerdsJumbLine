@@ -73,13 +73,20 @@ main:
 	la   $s2, array
 	
 	lw $t9, numberOfcharacters
-	sub $t9, $t9, 1
-	add $s3, $t9, $s2	#$s3 points to last element in array
+	#sub $t9, $t9, 1
+	#add $s3, $t9, $s2	#$s3 points to last element in array
 
+	decrement:		#decrement the number of characters to print out 3, 4, 5...[length] letters' arrangements
+	add $s3, $s2, $0
+	sub $t9, $t9, 1
+	add $s3, $t9, $0	#$s3 points to last element in array
+
+	la $s2, array
 ################################################
 # Code to rearrange the charcters 
 ################################################	
 	Permuteloop:
+	
 	li   $a0, 1	
 	move $a1, $t9		# generates random number in $a1, with the numberOfcharacters  being the upper bound
 	li   $v0, 42		# random int range, $a0 contains pseudorandom int value
@@ -100,6 +107,9 @@ main:
 	la $s2, array			# set register back to beginning of array index before outputting the scrambled array
 	add $s3, $t9, $s2		# #s3 points to last element in array
 	
+	
+	
+	
 ################################################
 #prints out the permutated array
 ################################################	
@@ -112,6 +122,8 @@ main:
         addi $s2, $s2, 1
         ble  $s2, $s3, RearrangedOutput
         
+        printStr(space)				
+        bgt  $t9, 2, decrement
       
 	j askForPermute
 	
