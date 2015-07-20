@@ -27,7 +27,7 @@ main:
 
 	seedRand()			#utility macro to seed random number generator... uses lower 32-bit of time in milliseconds
 
-	la  $s2, array
+	la  $s2, array			
 
 
 	
