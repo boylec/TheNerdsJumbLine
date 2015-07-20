@@ -57,7 +57,7 @@ move %registerToStore, $v0
 
 #Get a string input
 .macro getStr(%registerToStore, %maxChars)
-la $a0, %registerToStore
+la $a0, (%registerToStore)
 li $a1, %maxChars
 li $v0, 8
 syscall

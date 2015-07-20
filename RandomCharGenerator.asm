@@ -63,18 +63,13 @@ main:
 # prompt user if they want to rearrange the characters
 ##########################################################
 	askForPermute:			 #ask user if they want to rearrange the characters
-	li  $v0, 4   			 # system call code for Print String 
-	la  $a0, space  		 # load address of prompt into $a0 
-	syscall      	
+	printStr(space)	
 	
-	li  $v0, 4   			 # system call code for Print String 
-	la  $a0, PermutePrompt		 # load address of prompt into $a0 
-	syscall      	
+	printStr(PermutePrompt)
 	
-	li  $v0, 5    			# system call code for Read Integer n
-	syscall    			# reads the value into $v0
-	move $t6, $v0
-	bne  $t6, 1, main		# branch to main if user did not enter 1
+	getInt($t6)
+	
+	bne  $t6, 1, guessLoop		# branch to main if user did not enter 1
 	la   $s2, array
 	
 	lw $t9, numberOfcharacters
@@ -128,4 +123,6 @@ main:
         addi $s2, $s2, 1
    
 	jr $ra
+	
+	.include "guessLoop.asm"
 
