@@ -69,7 +69,7 @@ main:
 	
 	getInt($t6)
 	
-	bne  $t6, 1, guessLoop		# branch to main if user did not enter 1
+	bne  $t6, 1, GuessLoop		# branch to guessLoop if user did not enter 1
 	la   $s2, array
 	
 	lw $t9, numberOfcharacters
@@ -136,5 +136,5 @@ main:
    
 	jr $ra
 	
-	.include "guessLoop.asm"
+	.include "GuessLoop.asm"
 
