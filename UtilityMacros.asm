@@ -78,3 +78,22 @@ Loop:
 add %registerToIterate, %registerToIterate, 1
 ble %registerToIterate, %to, Loop
 .end_macro
+
+.macro strLength(%regToStoreLength, %regStoringStringAddress)
+li %regToStoreLength, 0 # initialize the count to zero
+la $a0, (%regStoringStringAddress)
+strLenLoop:
+lb $t8, 0($a0) # load the next character into t1
+beq $t8, 10, exitStrLen # check for the line feed character (enter) will signify end of string that was entered.
+addi $a0, $a0, 1 # increment the string pointer
+addi %regToStoreLength, %regToStoreLength, 1 # increment the count
+j strLenLoop # return to the top of the loop
+exitStrLen:
+.end_macro
+
+.macro printScoreWorth(%regStoringAddressOfString)
+strLength($t0,%regStoringAddressOfString)
+move $a0, $t0
+li $v0, 1
+syscall
+.end_macro

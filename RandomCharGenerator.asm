@@ -8,6 +8,7 @@ array:                  .asciiz  "             "
 theChar:		.word   0
 space:			.asciiz "\n"
 PermutePrompt:		.asciiz "Enter 1 to rearrange the letters or 2 to continue: "
+Score:			.word 	0
 			.include "UtilityMacros.asm"
 			.text
    
