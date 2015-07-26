@@ -1,9 +1,12 @@
 	.data
 StartGuessPrompt:	.asciiz "\nEnter in a valid word, at least 3 characters long using the given letters: "
+ControlsPrompt:		.asciiz "\n1 - Rearrange Letters\n2 - Stop Guessing"
+AvailLetters:		.asciiz "\nLetters:"
 WordIncorrectPrompt:	.asciiz "\nWord not valid. Try again!"
 WordCorrectPrompt:	.asciiz "\nCorrect! Earned "
 WordCorrectPoints:	.asciiz " points! Try another!"
 YourScoreIs:		.asciiz "\nYour current score: "
+NewLine:		.asciiz "\n"
 Score:			.word 	0
 GuessedWord:		.space 50
 	.text
@@ -18,9 +21,19 @@ GuessedWord:		.space 50
 	la $t0, Score
 	printInt($t0)
 	printStr(StartGuessPrompt)
+	printStr(ControlsPrompt)
+	printStr(AvailLetters)
+	printStr(randomLetterArray)
+	printStr(NewLine)
 	
 	la $s1, GuessedWord		# Make $s1 the address of GuessedWord
 	getStr ($s1, 9)			#At this point GuessedWord stores the guessed word (that is why the address of it is stored in $s1)
+	lb $t0, 0($s1)
+	beq $t0, 49, RearrangeChosen
+	beq $t0, 50, StopGuess
+	j ProcessGuess
+	
+	ProcessGuess:
 	strLength($t9,$s1)		#store length of GuessedWord in to $t9
 	
 	
@@ -58,3 +71,10 @@ GuessedWord:		.space 50
 		add $t0,$t0, $t1
 		sw $t0, Score
 		j GuessLoop
+
+	RearrangeChosen:
+	jal DoPermute
+	j GuessLoop
+	
+	StopGuess:
+	j MainProgramStart
