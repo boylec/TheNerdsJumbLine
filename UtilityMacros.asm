@@ -31,12 +31,8 @@ syscall
 .end_macro
 
 #Print an integer
-.macro printInt(%integer)
-subi $sp, $sp, 8
-sw $v0, 0($sp)
-sw $a0, 4($sp)
-
-li $a0, %integer
+.macro printInt(%regStoringInt)
+lw $a0, (%regStoringInt)
 li $v0, 1
 syscall
 .end_macro
@@ -85,7 +81,7 @@ la $a0, (%regStoringStringAddress)
 strLenLoop:
 lb $t8, 0($a0) # load the next character into t1
 beq $t8, 10, exitStrLen # check for the LF character signify end of string that was entered.
-beq $t8, 0, exitStrLen # check for the LF character signify end of string that was entered.
+beq $t8, 0, exitStrLen # check for the NULL character signify end of string that was entered.
 addi $a0, $a0, 1 # increment the string pointer
 addi %regToStoreLength, %regToStoreLength, 1 # increment the count
 j strLenLoop # return to the top of the loop

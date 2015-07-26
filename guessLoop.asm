@@ -1,11 +1,11 @@
 	.data
-StartGuessPrompt:	.asciiz "Enter in a valid word, at least 3 characters long using the given letters: "
-WordIncorrectPrompt:	.asciiz "Word not valid. Try again!\n"
-WordCorrectPrompt:	.asciiz "Correct! Earned "
-WordCorrectPoints:	.asciiz " points! Try another! \n"
-GuessedWord:		.space 10
-.space 			50
-	
+StartGuessPrompt:	.asciiz "\nEnter in a valid word, at least 3 characters long using the given letters: "
+WordIncorrectPrompt:	.asciiz "\nWord not valid. Try again!"
+WordCorrectPrompt:	.asciiz "\nCorrect! Earned "
+WordCorrectPoints:	.asciiz " points! Try another!"
+YourScoreIs:		.asciiz "\nYour current score: "
+Score:			.word 	0
+GuessedWord:		.space 50
 	.text
 	
 	#Loop for when users are making guesses
@@ -14,7 +14,11 @@ GuessedWord:		.space 10
 	#getStr($registorToStoreIn,$maxLengthOfStr) is available as macro function
 	#$t4 is numberOfCharacters of availableLettersArray
 	
+	printStr(YourScoreIs)
+	la $t0, Score
+	printInt($t0)
 	printStr(StartGuessPrompt)
+	
 	la $s1, GuessedWord		# Make $s1 the address of GuessedWord
 	getStr ($s1, 9)			#At this point GuessedWord stores the guessed word (that is why the address of it is stored in $s1)
 	strLength($t9,$s1)		#store length of GuessedWord in to $t9
