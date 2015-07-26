@@ -1,6 +1,6 @@
 #Word validator(incomplete)
 .data
-fnf:	.ascii  "The file was not found: "
+fnf:	.asciiz  "The file was not found`"
 file2:	.asciiz	"2.txt" # 67 words 134 characters
 file3:	.asciiz	"3.txt" # 637 words 1913 characters
 file4:	.asciiz	"4.txt" # 2458 words 9839 characters
@@ -14,44 +14,25 @@ file73:	.asciiz	"73.txt" # 3707 words 25949 characters
 cont:	.ascii  ""
 buffer: .space 84960
 buffer2: .space 84960
-searchWord: .space 10
 backSlash: .asciiz "\\"
   
 .text
 main:
-jal getWord
+jal getWordLength
 beq $s0 2 search2
 beq $s0 3 search3
 beq $s0 4 search4
 beq $s0 5 search5
 beq $s0 6 search6
 beq $s0 7 search7
-jal done
+j wordValidatorDone
 
-# Get word
-getWord:
-	li $v0, 8
-	li $a1, 9
-	la $a0, searchWord
-	syscall
-	
+# Get word: Stores the guess word in GuessedWord, stores the length of the guessed word in $s0
+getWordLength:
 	#gets the length of string into $s0
 	li $t0,0
-	la $t1, searchWord
-
-	lengthLoop:
-	lb $t2,($t1)
-	beq $t2,$0,lengthLoopExit
-	add $t0,$t0,1
-	add $t1,$t1,1
-	j lengthLoop
-	
-	lengthLoopExit:
-	subi $s0 $t0 1
-	addi $t0 $zero 0
-	addi $t1 $zero 0
-	addi $t2 $zero 0
-	
+	la $t1, (%regStoringAddressOfWord)
+	strLength($s0,$t1) #macro uses address of word in $t1, gets length of that string, stores that length in $s0
 	jr $ra
 	
 # Open File
@@ -83,7 +64,7 @@ search2:
 	jal read2
 	jal check
 	#jal print
-	beq $s1 1 close
+	beq %registerToStoreResult 1 close
 	beq $t0 0 close
 	j searchTwoLoop
 	
@@ -116,7 +97,7 @@ search3:
 	jal read3
 	jal check
 	#jal print
-	beq $s1 1 close
+	beq %registerToStoreResult 1 close
 	beq $t0 0 close
 	j searchThreeLoop
 	
@@ -149,7 +130,7 @@ search4:
 	jal read4
 	jal check
 	#jal print
-	beq $s1 1 close
+	beq %registerToStoreResult 1 close
 	beq $t0 0 close
 	j searchFourLoop
 		
@@ -193,7 +174,7 @@ search5:
 	jal read5
 	jal check
 	#jal print
-	beq $s1 1 close
+	beq %registerToStoreResult 1 close
 	beq $t0 0 search52
 	j searchFiveLoop		
 
@@ -208,7 +189,7 @@ search52:
 	jal read5
 	jal check
 	#jal print
-	beq $s1 1 close
+	beq %registerToStoreResult 1 close
 	beq $t0 0 close
 	j searchFiveTwoLoop
 
@@ -252,7 +233,7 @@ search6:
 	jal read6
 	jal check
 	#jal print
-	beq $s1 1 close
+	beq %registerToStoreResult 1 close
 	beq $t0 0 search62
 	j searchSixLoop		
 
@@ -267,7 +248,7 @@ search62:
 	jal read6
 	jal check
 	#jal print
-	beq $s1 1 close
+	beq %registerToStoreResult 1 close
 	beq $t0 0 close
 	j searchSixTwoLoop
 
@@ -322,7 +303,7 @@ search7:
 	jal read7
 	jal check
 	#jal print
-	beq $s1 1 close
+	beq %registerToStoreResult 1 close
 	beq $t0 0 search72
 	j searchSevenLoop		
 
@@ -337,7 +318,7 @@ search72:
 	jal read7
 	jal check
 	#jal print
-	beq $s1 1 close
+	beq %registerToStoreResult 1 close
 	beq $t0 0 search73
 	j searchSevenTwoLoop
 
@@ -352,7 +333,7 @@ search73:
 	jal read7
 	jal check
 	#jal print
-	beq $s1 1 close
+	beq %registerToStoreResult 1 close
 	beq $t0 0 close
 	j searchSevenThreeLoop
 										
@@ -363,7 +344,7 @@ print:
 	syscall
 	jr $ra
 
-#Check if word is found by comparing the current read word with the searchword stores result in $s1
+#Check if word is found by comparing the current read word with the GuessedWord stores result in %registerToStoreResult
 check:
 	 addi $t4 $zero 0#initialize $t4 and $t5 to 0
 	 addi $t5 $zero 0
@@ -371,7 +352,7 @@ check:
 	 compareLoop:
 	 subi $t6 $t6 1
 	 lb $t1 buffer($t4)
-	 lb $t2 searchWord($t5)
+	 lb $t2 GuessedWord($t5)
 	 seq $t3 $t1 $t2
 	 beqz $t3 compareLoopExit
 	 beqz $t6 compareLoopExit
@@ -380,7 +361,7 @@ check:
 	 j compareLoop
 	 
 	 compareLoopExit:
-	 addi $s1 $t3 0#store result
+	 addi %registerToStoreResult $t3 0#store result
 	 
 	 addi $t1 $zero 0
 	 addi $t2 $zero 0
@@ -395,19 +376,13 @@ close:
 	li	$v0, 16		# Close File Syscall
 	move	$a0, $s6	# Load File Descriptor
 	syscall
-	j done		
+	j wordValidatorDone		
  
 # Error
 err:
 	li	$v0, 4		# Print String Syscall
 	la	$a0, fnf	# Load Error String
 	syscall
-	j done
- 
-# Done
-done:
-	li $v0 1
-	move $a0 $s1
+	li	$v0, 10
 	syscall
-	li	$v0, 10		# Exit Syscall
-	syscall
+wordValidatorDone:
