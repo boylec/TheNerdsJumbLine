@@ -1,4 +1,3 @@
-
 			.data
 numberOfCharacters: 	.word	0
 welcomePrompt:		.asciiz "\n================================\n Welcome to The Nerds Jumbline! \n================================\n"
@@ -8,6 +7,7 @@ alphabet: 		.asciiz "abcdefghijklmnopqrstuvwxyz"
 randomLetterArray:                  .space 7
 theChar:		.word   0
 space:			.asciiz "\n"
+vowel:			.asciiz "aeiou"
 			.include "UtilityMacros.asm"
 			.text
    
@@ -25,9 +25,10 @@ MainProgramStart:
 	add $t7, $t4, $zero 		# counter
 	
 	la $s0, alphabet 		# pointer to alphabet
-
+	
 	jal GenerateRandomLetters
 	j GuessLoop
+	
 ###################################################################
 # print out a random sort of characters and store them into an array
 ##################################################################
@@ -50,7 +51,22 @@ MainProgramStart:
 	syscall			
 
 	add $t1, $s0, $a0 	# add string pointer by random number in $a0, store this new address in $t1
-
+	
+	beq $t7, 2, vowelAppend # branch to vowelAppend once the second to last character will be generated
+	
+	j charStore		# jump to charStore
+	
+	vowelAppend:		# at least one character in the array will be a vowel 
+	beq $t7, 1, charStore
+	la $s1, vowel
+	li $a0, 1	
+	li $a1, 5		# generates random number in $a0, with the counter 5 being the upper bound (it is exclusive)
+	li $v0, 42		# random int range, $a0 contains pseudorandom int value
+	syscall		
+		
+	add $t1, $s1, $a0
+	
+        charStore:
 	lbu  $t2, ($t1)		# isolates that bytesized char, puts it into $t2
 	sw   $t2, theChar
 	
@@ -69,7 +85,9 @@ MainProgramStart:
 	addi $sp, $sp, 16
 	
 	addi $t7, $t7, -1 	 # decrement counter
+	
 	bgt $t7, 0, LetterLoop
+	
 	jr $ra
 ##########################################################
 # Function to do a permutation of the randomLetterArray
@@ -127,5 +145,7 @@ MainProgramStart:
 	j resetCharLoop
 	doneWithReset:
 	jr $ra
+	
+	
 	.include "GuessLoop.asm"
 
