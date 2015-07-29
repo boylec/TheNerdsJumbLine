@@ -56,10 +56,15 @@ GuessedWord:		.space 50
 		exitCondition: 
 			la $s2, GuessedWord	# make $s2 original address Guessed Word
 	CheckGuess:				#At this point we have array storing the upper case letters that were guessed.
-		checkWordWithDict($s1,$s2) 		#Simulate guess is correct
+		checkWordWithDict($s1,$s2) 	#Store in $s1 if the word exists
 		bgt $s1, 0, WordCorrect		#if t1 is greater than 0 that means the word guess is correct
 	WordIncorrect:
 		printStr(WordIncorrectPrompt)
+		li $v0, 31
+		li $a0, 69
+		li $a2, 100
+		li $a3, 64
+		syscall
 		j GuessLoop
 	WordCorrect:
 		la $t2, GuessedWord
@@ -70,6 +75,11 @@ GuessedWord:		.space 50
 		strLength($t1,$t2)
 		add $t0,$t0, $t1
 		sw $t0, Score
+		li $v0, 31
+		li $a0, 72
+		li $a2, 100
+		li $a3, 64
+		syscall
 		j GuessLoop
 
 	RearrangeChosen:
