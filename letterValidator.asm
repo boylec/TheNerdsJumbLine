@@ -17,7 +17,8 @@ buffer: .space 84960
 buffer2: .space 84960
 searchWord: .space 10
 backSlash: .asciiz "\\"
-  
+
+ 
 .text
 main:
 jal getWord
@@ -28,12 +29,12 @@ jal done
 getWord:
 	li $v0, 8
 	li $a1, 9
-	la $a0, searchWord
+	move $a0, %randomLetterAddressReg
 	syscall
 	
 	#gets the length of string into $s0
 	li $t0,0
-	la $t1, searchWord
+	move $t1, %randomLetterAddressReg
 
 	lengthLoop:
 	lb $t2,($t1)
@@ -91,7 +92,8 @@ search2:
 	beq $s1 1 addToList2#prints word if valid
 	j addToListExit2
 	addToList2:
-	jal print
+	li $t1, 2
+	ListInsertMain($a1,$t1)
 	addToListExit2:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -142,7 +144,8 @@ search3:
 	beq $s1 1 addToList3#prints word if valid
 	j addToListExit3
 	addToList3:
-	jal print
+	li $t1, 3
+	ListInsertMain($a1,$t1)
 	addToListExit3:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -193,7 +196,8 @@ search4:
 	beq $s1 1 addToList4#prints word if valid
 	j addToListExit4
 	addToList4:
-	jal print
+	li $t1, 4
+	ListInsertMain($a1,$t1)
 	addToListExit4:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -256,7 +260,8 @@ search5:
 	beq $s1 1 addToList5#prints word if valid
 	j addToListExit5
 	addToList5:
-	jal print
+	li $t1, 5
+	ListInsertMain($a1,$t1)
 	addToListExit5:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -285,7 +290,8 @@ search52:
 	beq $s1 1 addToList52#prints word if valid
 	j addToListExit52
 	addToList52:
-	jal print
+	li $t1, 5
+	ListInsertMain($a1,$t1)
 	addToListExit52:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -348,7 +354,8 @@ search6:
 	beq $s1 1 addToList6#prints word if valid
 	j addToListExit6
 	addToList6:
-	jal print
+	li $t1, 6
+	ListInsertMain($a1,$t1)
 	addToListExit6:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -377,7 +384,8 @@ search62:
 	beq $s1 1 addToList62#prints word if valid
 	j addToListExit62
 	addToList62:
-	jal print
+	li $t1, 6
+	ListInsertMain($a1,$t1)
 	addToListExit62:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -452,7 +460,8 @@ search7:
 	beq $s1 1 addToList7#prints word if valid
 	j addToListExit7
 	addToList7:
-	jal print
+	li $t1, 7
+	ListInsertMain($a1,$t1)
 	addToListExit7:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -481,7 +490,8 @@ search72:
 	beq $s1 1 addToList72#prints word if valid
 	j addToListExit72
 	addToList72:
-	jal print
+		li $t1, 7
+	ListInsertMain($a1,$t1)
 	addToListExit72:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -510,7 +520,8 @@ search73:
 	beq $s1 1 addToList73#prints word if valid
 	j addToListExit73
 	addToList73:
-	jal print
+	li $t1, 7
+	ListInsertMain($a1,$t1)
 	addToListExit73:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -594,5 +605,3 @@ err:
  
 # Done
 done:
-	li	$v0, 10		# Exit Syscall
-	syscall

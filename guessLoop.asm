@@ -56,7 +56,8 @@ GuessedWord:		.space 50
 		exitCondition: 
 			la $s2, GuessedWord	# make $s2 original address Guessed Word
 	CheckGuess:				#At this point we have array storing the upper case letters that were guessed.
-		checkWordWithDict($s1,$s2) 	#Store in $s1 if the word exists
+		strLength($s3, $s2)
+		CompareToList($s2, $s3, $s1) 	#Store in $s1 if the word exists, $s3 is length of word, $s2 is reg storing GuessedWord
 		bgt $s1, 0, WordCorrect		#if t1 is greater than 0 that means the word guess is correct
 	WordIncorrect:
 		printStr(WordIncorrectPrompt)

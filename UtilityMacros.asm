@@ -2,6 +2,7 @@
 .data
 youTyped: .asciiz "\nYou typed "
 stringRead: .asciiz ""
+.include "LegitimateList.asm"
 
 #Get random int in range
 .macro getRand(%intMin, %intMax, %registerToStore)
@@ -97,6 +98,10 @@ syscall
 
 .macro checkWordWithDict(%registerToStoreResult, %regStoringAddressOfWord)
 .include "wordValidator.asm"
+.end_macro
+
+.macro populateLegitimateLists(%randomLetterAddressReg,%numberOfAvailWordsReturnReg)
+.include "letterValidator.asm"
 .end_macro
 
 

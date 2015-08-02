@@ -16,9 +16,9 @@ legitimate4:	.word 0		# number of legitmates remain (not guessed) that are 4 let
 legitimate5:	.word 0		# number of legitmates remain (not guessed) that are 5 letters long
 legitimate6:	.word 0		# number of legitmates remain (not guessed) that are 6 letters long
 legitimate7:	.word 0		# number of legitmates remain (not guessed) that are 7 letters long
-		.include "wordValidator.asm"
-		.include "UtilityMacros.asm"
-		.include "guessLoop.asm"
+#		.include "wordValidator.asm"
+#		.include "UtilityMacros.asm"
+#		.include "guessLoop.asm"
 
 
 .text
@@ -32,18 +32,18 @@ legitimate7:	.word 0		# number of legitmates remain (not guessed) that are 7 let
 ##############################################################
 
 
-.macro CopyWord(%wordAddr, %wordLength)	
+.macro CopyWord(%wordAddrReg, %wordLengthReg)	
 # this function copies a word into curWord. If the word is less than 7 letters, extend it to 7 bytes with " "
 	jal curWordInitialize
 	
 	add $t5, $zero, $zero		# $t5 curWord pointer
-	add $t6, %wordLength, $zero	# $t6 is length of word entered by user and number of times to loop
+	add $t6, $zero, %wordLengthReg	# $t6 is length of word entered by user and number of times to loop
 copyWordLoop:
 	beqz $t6, listInsert
 	subi $t6, $t6, 1
-	lb $t1, (%wordAddr)
+	lb $t1, 0(%wordAddrReg)
 	sb $t1, curWord($t5)
-	addi %wordAddr, %wordAddr, 1
+	addi %wordAddrReg, %wordAddrReg, 1
 	addi $t5, $t5, 1
 	j copyWordLoop
 	
@@ -63,20 +63,20 @@ endInitialize:
 .end_macro 
 
 		
-.macro ListInsertMain(%inputBuffer, %wordLength) # used for legitimate list generator (address of the word to be insert, length of the word)
-	CopyWord(%inputBuffer, %wordLength)
+.macro ListInsertMain(%inputBufferReg, %wordLengthReg) # used for legitimate list generator (address of the word to be insert, length of the word)
+	CopyWord(%inputBufferReg, %wordLengthReg)
 	lw $s7, listMainPtr			# load list_global pointer. only this func can change list_global pointer.
 	
 updateCounter:
 	lw $t0, legitimateSum
 	addi $t0, $t0, 1
 	sw $t0, legitimateSum
-	beq %wordLength 2 alter2
-	beq %wordLength 3 alter3
-	beq %wordLength 4 alter4
-	beq %wordLength 5 alter5
-	beq %wordLength 6 alter6
-	beq %wordLength 7 alter7
+	move $t1, %wordLengthReg
+	beq $t1 3 alter3
+	beq $t1 4 alter4
+	beq $t1 5 alter5
+	beq $t1 6 alter6
+	beq $t1 7 alter7
 	alter2:
 	lw $t0, legitimate2
 	addi $t0, $t0, 1
@@ -126,16 +126,16 @@ listInsert:
 	sw $s7, listMainPtr
 .end_macro 
 
-.macro ListInsertCorrect(%inputBuffer, %wordLength) # for correct-guessed words list
-	CopyWord(%inputBuffer, %wordLength)
+.macro ListInsertCorrect(%inputBuffer, %wordLengthReg) # for correct-guessed words list
+	CopyWord(%inputBuffer, %wordLengthReg)
 	lw $s7, listCorrectPtr
 updateCounter:
-	beq %wordLength 2 alter2
-	beq %wordLength 3 alter3
-	beq %wordLength 4 alter4
-	beq %wordLength 5 alter5
-	beq %wordLength 6 alter6
-	beq %wordLength 7 alter7
+	beq %wordLengthReg 2 alter2
+	beq %wordLengthReg 3 alter3
+	beq %wordLengthReg 4 alter4
+	beq %wordLengthReg 5 alter5
+	beq %wordLengthReg 6 alter6
+	beq %wordLengthReg 7 alter7
 	alter2:
 	lw $t0, legitimate2
 	subi $t0, $t0, 1
@@ -185,8 +185,8 @@ listInsert:
 	sw $s7, listCorrectPtr
 .end_macro 
 
-.macro ListInsertWrong(%inputBuffer, %wordLength) # for incorrect-guessed words list
-	CopyWord(%inputBuffer, %wordLength)
+.macro ListInsertWrong(%inputBuffer, %wordLengthReg) # for incorrect-guessed words list
+	CopyWord(%inputBuffer, %wordLengthReg)
 	lw $s7, listWrongPtr
 	
 listInsert: 
@@ -208,9 +208,8 @@ listInsert:
 .end_macro 
 
 
-.macro CompareToList(%inputBuffer, %wordLength)	# compare user input to list, and insert user guessing into cordinate lists
-	CopyWord(%inputBuffer, %wordLength)
-	
+.macro CompareToList(%inputBufferReg, %wordLengthReg, %regToStoreRightOrWrong)	# compare user input to list, and insert user guessing into cordinate lists
+	CopyWord(%inputBufferReg, %wordLengthReg)
 	add $t5, $zero, $zero	# $t5 curWord pointer
 	add $t4, $zero, $zero	# $t4 list temporary pointer
 	add $t3, $zero, $zero	# $t3 list word pointer
@@ -230,10 +229,12 @@ listInsert:
 	j compareLoop2
 	
 	guessCorrect:
-	ListInsertCorrect(%inputBuffer, %wordLength)
+	ListInsertCorrect(%inputBufferReg, %wordLengthReg)
+	li %regToStoreRightOrWrong, 1
 	j endCompare
 	notFound:
-	ListInsertWrong(%inputBuffer, %wordLength)
+	ListInsertWrong(%inputBufferReg, %wordLengthReg)
+	li %regToStoreRightOrWrong, 0
 	j endCompare
 	checkNext:
 	addi $t3, $t3,7

@@ -87,7 +87,8 @@ MainProgramStart:
 	addi $t7, $t7, -1 	 # decrement counter
 	
 	bgt $t7, 0, LetterLoop
-	
+	la $t3, randomLetterArray
+	populateLegitimateLists($t3,$s7)
 	jr $ra
 ##########################################################
 # Function to do a permutation of the randomLetterArray
