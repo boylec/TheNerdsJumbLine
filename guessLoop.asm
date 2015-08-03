@@ -18,7 +18,7 @@ GuessedWord:		.space 50
 	#$t4 is numberOfCharacters of availableLettersArray
 	
 	printStr(YourScoreIs)
-	la $t0, Score
+	lw $t0, Score
 	printInt($t0)
 	printStr(StartGuessPrompt)
 	printStr(ControlsPrompt)
