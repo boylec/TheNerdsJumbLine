@@ -9,6 +9,7 @@ theChar:		.word   0
 space:			.asciiz "\n"
 vowel:			.asciiz "aeiou"
 			.include "UtilityMacros.asm"
+
 			.text
    
 MainProgramStart:
@@ -27,6 +28,20 @@ MainProgramStart:
 	la $s0, alphabet 		# pointer to alphabet
 	
 	jal GenerateRandomLetters
+	la $t3, randomLetterArray
+	
+	addi $sp, $sp, -16
+	sw $t4, 0($sp)
+	sw $t7, 4($sp)
+	sw $s0, 8($sp)
+	sw $t3, 12($sp)
+	jal doLetterValidator
+	lw $t4, 0($sp)
+	lw $t7, 4($sp)
+	lw $s0, 8($sp)
+	lw $t3, 12($sp)
+	addi $sp, $sp, 16
+	printStr(randomLetterArray)
 	j GuessLoop
 	
 ###################################################################
@@ -87,8 +102,7 @@ MainProgramStart:
 	addi $t7, $t7, -1 	 # decrement counter
 	
 	bgt $t7, 0, LetterLoop
-	la $t3, randomLetterArray
-	populateLegitimateLists($t3,$s7)
+
 	jr $ra
 ##########################################################
 # Function to do a permutation of the randomLetterArray
@@ -149,4 +163,6 @@ MainProgramStart:
 	
 	
 	.include "GuessLoop.asm"
+	.include "LegitimateList.asm"
+	.include "letterValidator.asm"
 

@@ -2,7 +2,29 @@
 .data
 youTyped: .asciiz "\nYou typed "
 stringRead: .asciiz ""
-.include "LegitimateList.asm"
+newLine: .asciiz "\n"
+.space 10
+.align 2
+Char1:	.word
+.space 10
+.align 2
+Char2: 	.word
+.space 10
+.align 2
+Char3:	.word
+.space 10
+.align 2
+Char4: 	.word
+.space 10
+.align 2
+Char5:	.word
+.space 10
+.align 2
+Char6:	.word
+.space 10
+.align 2
+Char7:	.word
+
 
 #Get random int in range
 .macro getRand(%intMin, %intMax, %registerToStore)
@@ -33,9 +55,10 @@ syscall
 
 #Print an integer
 .macro printInt(%regStoringInt)
-lw $a0, (%regStoringInt)
+move $a0, %regStoringInt
 li $v0, 1
 syscall
+printStr(newLine)
 .end_macro
 
 #Print a character
@@ -77,16 +100,21 @@ ble %registerToIterate, %to, Loop
 .end_macro
 
 .macro strLength(%regToStoreLength, %regStoringStringAddress)
+addi $sp, $sp, -8
+sw $t9, 0($sp)
+sw $t8, 4($sp)
+move $t9, %regStoringStringAddress
 li %regToStoreLength, 0 # initialize the count to zero
-la $a0, (%regStoringStringAddress)
 strLenLoop:
-lb $t8, 0($a0) # load the next character into t1
-beq $t8, 10, exitStrLen # check for the LF character signify end of string that was entered.
-beq $t8, 0, exitStrLen # check for the NULL character signify end of string that was entered.
-addi $a0, $a0, 1 # increment the string pointer
+lb $t8, 0($t9) # load the next character into t1
+blt $t8, 48, exitStrLen # check for the LF character signify end of string that was entered.
+addi $t9, $t9, 1 # increment the string pointer
 addi %regToStoreLength, %regToStoreLength, 1 # increment the count
 j strLenLoop # return to the top of the loop
 exitStrLen:
+lw $t9, 0($sp)
+lw $t8, 4($sp)
+addi $sp, $sp, 8
 .end_macro
 
 .macro printScoreWorth(%regStoringAddressOfString)
@@ -94,14 +122,6 @@ strLength($t0,%regStoringAddressOfString)
 move $a0, $t0
 li $v0, 1
 syscall
-.end_macro
-
-.macro checkWordWithDict(%registerToStoreResult, %regStoringAddressOfWord)
-.include "wordValidator.asm"
-.end_macro
-
-.macro populateLegitimateLists(%randomLetterAddressReg,%numberOfAvailWordsReturnReg)
-.include "letterValidator.asm"
 .end_macro
 
 

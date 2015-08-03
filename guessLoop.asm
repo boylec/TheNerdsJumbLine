@@ -54,11 +54,11 @@ GuessedWord:		.space 50
 			beq  $s1, $t1, exitCondition		#If input is at last postion exit loop.
 			j loopInputToLower
 		exitCondition: 
-			la $s2, GuessedWord	# make $s2 original address Guessed Word
+			la $a0, GuessedWord	# make $s2 original address Guessed Word
 	CheckGuess:				#At this point we have array storing the upper case letters that were guessed.
-		strLength($s3, $s2)
-		CompareToList($s2, $s3, $s1) 	#Store in $s1 if the word exists, $s3 is length of word, $s2 is reg storing GuessedWord
-		bgt $s1, 0, WordCorrect		#if t1 is greater than 0 that means the word guess is correct
+		strLength($a1, $a0)
+		jal CompareToList 	#a0 = holds address of input, $a1 = holds length of input, $s1 stores return bool, word is good or bad
+		bgt $s1, 0, WordCorrect		#if s1 is greater than 0 that means the word guess is correct
 	WordIncorrect:
 		printStr(WordIncorrectPrompt)
 		li $v0, 31
