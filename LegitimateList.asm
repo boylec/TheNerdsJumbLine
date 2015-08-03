@@ -287,11 +287,19 @@ listInsertForListInsertWrong:
 	j compareLoop2
 	
 	guessCorrect:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal ListInsertCorrect
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	li $s1, 1
 	j endCompare
 	notFound:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal ListInsertWrong
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	li $s1, 0
 	j endCompare
 	checkNext:
