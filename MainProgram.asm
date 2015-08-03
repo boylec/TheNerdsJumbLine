@@ -165,4 +165,6 @@ MainProgramStart:
 	.include "GuessLoop.asm"
 	.include "LegitimateList.asm"
 	.include "letterValidator.asm"
+	
+	DoneWithProgram:
 

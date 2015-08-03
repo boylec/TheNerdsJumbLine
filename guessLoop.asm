@@ -88,4 +88,28 @@ GuessedWord:		.space 50
 	j GuessLoop
 	
 	StopGuess:
-	j MainProgramStart
+#	add $v0, $zero, $zero
+#	add $v1, $zero, $zero
+#	add $a0, $zero, $zero
+#	add $a1, $zero, $zero
+#	add $a2, $zero, $zero	
+#	add $a3, $zero, $zero
+#	add $t0, $zero, $zero
+#	add $t1, $zero, $zero	
+#	add $t2, $zero, $zero
+#	add $t3, $zero, $zero
+#	add $t4, $zero, $zero	
+#	add $t5, $zero, $zero
+#	add $t6, $zero, $zero
+#	add $t7, $zero, $zero	
+#	add $t8, $zero, $zero
+#	add $t9, $zero, $zero
+#	add $s0, $zero, $zero	
+##	add $s2, $zero, $zero
+#	add $s3, $zero, $zero	
+#	add $s4, $zero, $zero
+#	add $s5, $zero, $zero
+#	add $s6, $zero, $zero	
+#	add $s7, $zero, $zero
+#	add $ra, $zero, $zero
+j DoneWithProgram
