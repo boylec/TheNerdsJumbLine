@@ -1,5 +1,6 @@
 	.data
 StartGuessPrompt:	.asciiz "\nEnter in a valid word, at least 3 characters long using the given letters: "
+StartGuessPrompt2:	.asciiz "\nEnter in a valid word, at least 3 characters long using the given letters: "
 ControlsPrompt:		.asciiz "\n1 - Rearrange Letters\n2 - Stop Guessing"
 AvailLetters:		.asciiz "\nLetters:"
 WordIncorrectPrompt:	.asciiz "\nWord not valid. Try again!"
@@ -20,7 +21,7 @@ GuessedWord:		.space 50
 	printStr(YourScoreIs)
 	lw $t0, Score
 	printInt($t0)
-	printStr(StartGuessPrompt)
+	printStr(StartGuessPrompt2)
 	printStr(ControlsPrompt)
 	printStr(AvailLetters)
 	printStr(randomLetterArray)

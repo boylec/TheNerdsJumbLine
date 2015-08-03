@@ -1,11 +1,11 @@
 #Letter Validator
 .data
-searching2String:	.asciiz "\nSearching 2 letter file"
-searching3String:	.asciiz "\nSearching 3 letter file"
-searching4String:	.asciiz "\nSearching 4 letter file"
-searching5String:	.asciiz "\nSearching 5 letter file"
-searching6String:	.asciiz "\nSearching 6 letter file"
-searching7String:	.asciiz "\nSearching 7 letter file"
+searching2String:	.asciiz "\nLoading...14%"
+searching3String:	.asciiz "\nLoading...29%"
+searching4String:	.asciiz "\nLoading...43%"
+searching5String:	.asciiz "\nLoading...57%"
+searching6String:	.asciiz "\nLoading...71%"
+searching7String:	.asciiz "\nLoading...86%"
 fnf:	.ascii  "The file was not found: "
 file2:	.asciiz	"2.txt" # 67 words 134 characters
 file3:	.asciiz	"3.txt" # 637 words 1913 characters
@@ -62,7 +62,7 @@ search2:
 	addi $t0 $zero 67	#67 words to check in this file is $t0
 	printStr(searching2String)
 	searchTwoLoop:		#start loop
-	printInt($t0)
+	#printInt($t0)
 	subi $t0 $t0 1		#when t0 gets to 0 we are done
 	addi $s3 $s0 0		#set $s3 to $s0... $s0 is the length of the random letter array
 	addi $sp, $sp, -4
@@ -157,7 +157,7 @@ search3:
 	addi $t0 $zero 635
 	printStr(searching3String)
 	searchThreeLoop:
-	printInt($t0)
+	#printInt($t0)
 	subi $t0 $t0 1
 	addi $s3 $s0 0
 	addi $sp, $sp, -4
@@ -250,7 +250,7 @@ search4:
 	addi $t0 $zero 2458
 	printStr(searching4String)
 	searchFourLoop:
-	printInt($t0)
+	#printInt($t0)
 	subi $t0 $t0 1
 	addi $s3 $s0 0
 	addi $sp, $sp, -4
@@ -353,7 +353,7 @@ search5:
 	addi $sp, $sp, 4
 	addi $t0 $zero 67
 	addi $t0 $zero 4019
-		printStr(searching5String)
+		#printStr(searching5String)
 	searchFiveLoop:
 	subi $t0 $t0 1
 	addi $s3 $s0 0
@@ -527,7 +527,7 @@ search6:
 	addi $sp, $sp, 4
 	addi $t0 $zero 67
 	addi $t0 $zero 3887
-		printStr(searching6String)
+		#printStr(searching6String)
 	searchSixLoop:
 	subi $t0 $t0 1
 	addi $s3 $s0 0
@@ -713,7 +713,7 @@ search7:
 	addi $sp, $sp, 4
 	addi $t0 $zero 67
 	addi $t0 $zero 3144
-		printStr(searching7String)
+		#printStr(searching7String)
 	searchSevenLoop:
 	subi $t0 $t0 1
 	addi $s3 $s0 0
@@ -783,7 +783,7 @@ search72:
 	addi $sp, $sp, 4
 	addi $t0 $zero 67
 	addi $t0 $zero 3277
-		printStr(searching7String)
+		#printStr(searching7String)
 	searchSevenTwoLoop:
 	subi $t0 $t0 1
 	addi $s3 $s0 0

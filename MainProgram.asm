@@ -41,7 +41,7 @@ MainProgramStart:
 	lw $s0, 8($sp)
 	lw $t3, 12($sp)
 	addi $sp, $sp, 16
-	printStr(randomLetterArray)
+	#printStr(randomLetterArray)
 	j GuessLoop
 	
 ###################################################################
