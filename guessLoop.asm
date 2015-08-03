@@ -34,12 +34,12 @@ GuessedWord:		.space 50
 	j ProcessGuess
 	
 	ProcessGuess:
-	strLength($t9,$s1)		#store length of GuessedWord in to $t9
+	strLength($t7,$s1)		#store length of GuessedWord in to $t9
 	
 	
 	#Force lower case characters to upper case
 	# This works by checkin the range for lower case, forcing to upper, and exiting if MAX position is reached
-	add $t1, $s1, $t9		#Set $t1 to MAX input postion in array, this keeps track for "exitCondition" below
+	add $t1, $s1, $t7		#Set $t1 to MAX input postion in array, this keeps track for "exitCondition" below
 	loopInputToLower:
 		lb $t0, ($s1)
 		blt $t0, 97, letIsUpperCase  	#if input ascii is less than 97 "a" then it is Upper Case

@@ -53,14 +53,23 @@ read2:
  	
 # Search through data
 search2:
-	jal open2		#open the 2 length file
+	
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	jal open2
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	addi $t0 $zero 67	#67 words to check in this file is $t0
 	printStr(searching2String)
 	searchTwoLoop:		#start loop
 	printInt($t0)
 	subi $t0 $t0 1		#when t0 gets to 0 we are done
 	addi $s3 $s0 0		#set $s3 to $s0... $s0 is the length of the random letter array
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal read2
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	
 	addi $sp, $sp -24		#a0, a1, a2, t0, t1, ra
 	sw $a0, 0($sp)
@@ -83,7 +92,7 @@ search2:
 	addToList2:
 	li $t1, 2
 	#t0, t1, s1, s0, s3, t2, s6, s2
-	addi $sp, $sp, -32
+	addi $sp, $sp, -36
 	sw $t0, 0($sp)
 	sw $t1, 4($sp)
 	sw $t2, 8($sp)
@@ -92,6 +101,7 @@ search2:
 	sw $s2, 20($sp)
 	sw $s3, 24($sp)
 	sw $s6, 28($sp)
+	sw $ra, 32($sp)
 	la $a0, buffer
 	strLength($a1,$a0)
 	jal ListInsertMain
@@ -103,7 +113,8 @@ search2:
 	lw $s2, 20($sp)
 	lw $s3, 24($sp)
 	lw $s6, 28($sp)
-	addi $sp, $sp, 32
+	lw $ra, 32($sp)
+	addi $sp, $sp, 36
 	
 	addToListExit2:
 	
@@ -137,14 +148,23 @@ search3:
 	li	$v0, 16		# Close File Syscall
 	move	$a0, $s6	# Load File Descriptor
 	syscall
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal open3
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	addi $t0 $zero 67
 	addi $t0 $zero 635
 	printStr(searching3String)
 	searchThreeLoop:
 	printInt($t0)
 	subi $t0 $t0 1
 	addi $s3 $s0 0
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal read3
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	
 	addi $sp, $sp -24		#a0, a1, a2, t0, t1, ra
 	sw $a0, 0($sp)
@@ -166,7 +186,7 @@ search3:
 	j addToListExit3
 	addToList3:
 	li $t1, 3
-	addi $sp, $sp, -32
+	addi $sp, $sp, -36
 	sw $t0, 0($sp)
 	sw $t1, 4($sp)
 	sw $t2, 8($sp)
@@ -175,6 +195,7 @@ search3:
 	sw $s2, 20($sp)
 	sw $s3, 24($sp)
 	sw $s6, 28($sp)
+	sw $ra, 32($sp)
 	la $a0, buffer
 	strLength($a1,$a0)
 	jal ListInsertMain
@@ -186,6 +207,8 @@ search3:
 	lw $s2, 20($sp)
 	lw $s3, 24($sp)
 	lw $s6, 28($sp)
+	lw $ra, 32($sp)
+	addi $sp, $sp, 36
 	addToListExit3:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -218,14 +241,23 @@ search4:
 	li	$v0, 16		# Close File Syscall
 	move	$a0, $s6	# Load File Descriptor
 	syscall
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal open4
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	addi $t0 $zero 67
 	addi $t0 $zero 2458
 	printStr(searching4String)
 	searchFourLoop:
 	printInt($t0)
 	subi $t0 $t0 1
 	addi $s3 $s0 0
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal read4
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	
 		addi $sp, $sp -24		#a0, a1, a2, t0, t1, ra
 	sw $a0, 0($sp)
@@ -247,7 +279,7 @@ search4:
 	j addToListExit4
 	addToList4:
 	li $t1, 4
-	addi $sp, $sp, -32
+	addi $sp, $sp, -36
 	sw $t0, 0($sp)
 	sw $t1, 4($sp)
 	sw $t2, 8($sp)
@@ -256,6 +288,7 @@ search4:
 	sw $s2, 20($sp)
 	sw $s3, 24($sp)
 	sw $s6, 28($sp)
+	sw $ra, 32($sp)
 	la $a0, buffer
 	strLength($a1,$a0)
 	jal ListInsertMain
@@ -267,6 +300,8 @@ search4:
 	lw $s2, 20($sp)
 	lw $s3, 24($sp)
 	lw $s6, 28($sp)
+	lw $ra, 32($sp)
+	addi $sp, $sp, 36
 	addToListExit4:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -311,13 +346,22 @@ search5:
 	li	$v0, 16		# Close File Syscall
 	move	$a0, $s6	# Load File Descriptor
 	syscall
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal open5
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	addi $t0 $zero 67
 	addi $t0 $zero 4019
 		printStr(searching5String)
 	searchFiveLoop:
 	subi $t0 $t0 1
 	addi $s3 $s0 0
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal read5
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	
 		addi $sp, $sp -24		#a0, a1, a2, t0, t1, ra
 	sw $a0, 0($sp)
@@ -339,7 +383,7 @@ search5:
 	j addToListExit5
 	addToList5:
 	li $t1, 5
-	addi $sp, $sp, -32
+	addi $sp, $sp, -36
 	sw $t0, 0($sp)
 	sw $t1, 4($sp)
 	sw $t2, 8($sp)
@@ -348,6 +392,7 @@ search5:
 	sw $s2, 20($sp)
 	sw $s3, 24($sp)
 	sw $s6, 28($sp)
+	sw $ra, 32($sp)
 	la $a0, buffer
 	strLength($a1,$a0)
 	jal ListInsertMain
@@ -359,6 +404,8 @@ search5:
 	lw $s2, 20($sp)
 	lw $s3, 24($sp)
 	lw $s6, 28($sp)
+	lw $ra, 32($sp)
+	addi $sp, $sp, 36
 	addToListExit5:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -369,13 +416,22 @@ search52:
 	li	$v0, 16		# Close File Syscall
 	move	$a0, $s6	# Load File Descriptor
 	syscall
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal open52
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	addi $t0 $zero 67
 	addi $t0 $zero 674
 		printStr(searching5String)
 	searchFiveTwoLoop:
 	subi $t0 $t0 1
 	addi $s3 $s0 0
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal read5
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	
 		addi $sp, $sp -24		#a0, a1, a2, t0, t1, ra
 	sw $a0, 0($sp)
@@ -397,7 +453,7 @@ search52:
 	j addToListExit52
 	addToList52:
 	li $t1, 5
-	addi $sp, $sp, -32
+	addi $sp, $sp, -36
 	sw $t0, 0($sp)
 	sw $t1, 4($sp)
 	sw $t2, 8($sp)
@@ -406,6 +462,7 @@ search52:
 	sw $s2, 20($sp)
 	sw $s3, 24($sp)
 	sw $s6, 28($sp)
+	sw $ra, 32($sp)
 	la $a0, buffer
 	strLength($a1,$a0)
 	jal ListInsertMain
@@ -417,6 +474,8 @@ search52:
 	lw $s2, 20($sp)
 	lw $s3, 24($sp)
 	lw $s6, 28($sp)
+	lw $ra, 32($sp)
+	addi $sp, $sp, 36
 	addToListExit52:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -461,13 +520,22 @@ search6:
 	li	$v0, 16		# Close File Syscall
 	move	$a0, $s6	# Load File Descriptor
 	syscall
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal open6
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	addi $t0 $zero 67
 	addi $t0 $zero 3887
 		printStr(searching6String)
 	searchSixLoop:
 	subi $t0 $t0 1
 	addi $s3 $s0 0
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal read6
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	
 		addi $sp, $sp -24		#a0, a1, a2, t0, t1, ra
 	sw $a0, 0($sp)
@@ -489,7 +557,7 @@ search6:
 	j addToListExit6
 	addToList6:
 	li $t1, 6
-	addi $sp, $sp, -32
+	addi $sp, $sp, -36
 	sw $t0, 0($sp)
 	sw $t1, 4($sp)
 	sw $t2, 8($sp)
@@ -498,6 +566,7 @@ search6:
 	sw $s2, 20($sp)
 	sw $s3, 24($sp)
 	sw $s6, 28($sp)
+	sw $ra, 32($sp)
 	la $a0, buffer
 	strLength($a1,$a0)
 	jal ListInsertMain
@@ -509,6 +578,8 @@ search6:
 	lw $s2, 20($sp)
 	lw $s3, 24($sp)
 	lw $s6, 28($sp)
+	lw $ra, 32($sp)
+	addi $sp, $sp, 36
 	addToListExit6:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -519,13 +590,22 @@ search62:
 	li	$v0, 16		# Close File Syscall
 	move	$a0, $s6	# Load File Descriptor
 	syscall
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal open62
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	addi $t0 $zero 67
 	addi $t0 $zero 3533
 		printStr(searching6String)
 	searchSixTwoLoop:
 	subi $t0 $t0 1
 	addi $s3 $s0 0
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal read6
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	
 		addi $sp, $sp -24		#a0, a1, a2, t0, t1, ra
 	sw $a0, 0($sp)
@@ -547,7 +627,7 @@ search62:
 	j addToListExit62
 	addToList62:
 	li $t1, 6
-	addi $sp, $sp, -32
+	addi $sp, $sp, -36
 	sw $t0, 0($sp)
 	sw $t1, 4($sp)
 	sw $t2, 8($sp)
@@ -556,6 +636,7 @@ search62:
 	sw $s2, 20($sp)
 	sw $s3, 24($sp)
 	sw $s6, 28($sp)
+	sw $ra, 32($sp)
 	la $a0, buffer
 	strLength($a1,$a0)
 	jal ListInsertMain
@@ -567,6 +648,8 @@ search62:
 	lw $s2, 20($sp)
 	lw $s3, 24($sp)
 	lw $s6, 28($sp)
+	lw $ra, 32($sp)
+	addi $sp, $sp, 36
 	addToListExit62:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -623,13 +706,22 @@ search7:
 	li	$v0, 16		# Close File Syscall
 	move	$a0, $s6	# Load File Descriptor
 	syscall
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal open7
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	addi $t0 $zero 67
 	addi $t0 $zero 3144
 		printStr(searching7String)
 	searchSevenLoop:
 	subi $t0 $t0 1
 	addi $s3 $s0 0
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal read7
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	
 		addi $sp, $sp -24		#a0, a1, a2, t0, t1, ra
 	sw $a0, 0($sp)
@@ -651,7 +743,7 @@ search7:
 	j addToListExit7
 	addToList7:
 	li $t1, 7
-	addi $sp, $sp, -32
+	addi $sp, $sp, -36
 	sw $t0, 0($sp)
 	sw $t1, 4($sp)
 	sw $t2, 8($sp)
@@ -660,6 +752,7 @@ search7:
 	sw $s2, 20($sp)
 	sw $s3, 24($sp)
 	sw $s6, 28($sp)
+	sw $ra, 32($sp)
 	la $a0, buffer
 	strLength($a1,$a0)
 	jal ListInsertMain
@@ -671,6 +764,8 @@ search7:
 	lw $s2, 20($sp)
 	lw $s3, 24($sp)
 	lw $s6, 28($sp)
+	lw $ra, 32($sp)
+	addi $sp, $sp, 36
 	addToListExit7:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -681,13 +776,22 @@ search72:
 	li	$v0, 16		# Close File Syscall
 	move	$a0, $s6	# Load File Descriptor
 	syscall
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal open72
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	addi $t0 $zero 67
 	addi $t0 $zero 3277
 		printStr(searching7String)
 	searchSevenTwoLoop:
 	subi $t0 $t0 1
 	addi $s3 $s0 0
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal read7
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	
 		addi $sp, $sp -24		#a0, a1, a2, t0, t1, ra
 	sw $a0, 0($sp)
@@ -709,7 +813,7 @@ search72:
 	j addToListExit72
 	addToList72:
 	li $t1, 7
-	addi $sp, $sp, -32
+	addi $sp, $sp, -36
 	sw $t0, 0($sp)
 	sw $t1, 4($sp)
 	sw $t2, 8($sp)
@@ -718,6 +822,7 @@ search72:
 	sw $s2, 20($sp)
 	sw $s3, 24($sp)
 	sw $s6, 28($sp)
+	sw $ra, 32($sp)
 	la $a0, buffer
 	strLength($a1,$a0)
 	jal ListInsertMain
@@ -729,6 +834,8 @@ search72:
 	lw $s2, 20($sp)
 	lw $s3, 24($sp)
 	lw $s6, 28($sp)
+	lw $ra, 32($sp)
+	addi $sp, $sp, 36
 	addToListExit72:
 	
 	addi $s1 $zero 0 #reset register that determines validity
@@ -739,13 +846,22 @@ search73:
 	li	$v0, 16		# Close File Syscall
 	move	$a0, $s6	# Load File Descriptor
 	syscall
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal open73
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	addi $t0 $zero 67
 	addi $t0 $zero 3707
 		printStr(searching7String)
 	searchSevenThreeLoop:
 	subi $t0 $t0 1
 	addi $s3 $s0 0
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
 	jal read7
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	
 	addi $sp, $sp -24		#a0, a1, a2, t0, t1, ra
 	sw $a0, 0($sp)
@@ -767,7 +883,7 @@ search73:
 	j addToListExit73
 	addToList73:
 	li $t1, 7
-	addi $sp, $sp, -32
+	addi $sp, $sp, -36
 	sw $t0, 0($sp)
 	sw $t1, 4($sp)
 	sw $t2, 8($sp)
@@ -776,6 +892,7 @@ search73:
 	sw $s2, 20($sp)
 	sw $s3, 24($sp)
 	sw $s6, 28($sp)
+	sw $ra, 32($sp)
 	la $a0, buffer
 	strLength($a1,$a0)
 	jal ListInsertMain
@@ -787,6 +904,8 @@ search73:
 	lw $s2, 20($sp)
 	lw $s3, 24($sp)
 	lw $s6, 28($sp)
+	lw $ra, 32($sp)
+	addi $sp, $sp, 36
 	addToListExit73:
 	
 	addi $s1 $zero 0 #reset register that determines validity
