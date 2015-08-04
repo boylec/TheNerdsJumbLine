@@ -58,8 +58,8 @@ GuessLoop:
 	printStr(total)
 	printInt($t8)
 	# for debugging
-	la $t9, listMain
-	PrintList($t9, $t8)
+	#la $t9, listMain
+	#PrintList($t9, $t8)
 	
 	printStr(correctRecord)
 	la $t9, listCorrect
