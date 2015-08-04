@@ -10,7 +10,7 @@ YourScoreIs:		.asciiz "\nYour current score: "
 YourFinalScore:		.asciiz "\nYour final score: "
 DoneGuessingString:	.asciiz "\nWords that were possible:\n"
 WordsYouGuessedString:	.asciiz "\nWords you guessed:\n"
-WordsYouGuessedIncorrectString: .asciiz "\nWords that you guessed incorrectly:\m"
+WordsYouGuessedIncorrectString: .asciiz "\nWords that you guessed incorrectly:"
 GotAllWordsString:	.asciiz "\nYou guessed every word good job!"
 NewLine:		.asciiz "\n"
 Score:			.word 	0
