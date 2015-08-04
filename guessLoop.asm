@@ -1,12 +1,13 @@
 	.data
-StartGuessPrompt:	.asciiz "\nEnter in a valid word, at least 3 characters long using the given letters: "
-StartGuessPrompt2:	.asciiz "\nEnter in a valid word, at least 3 characters long using the given letters: "
+StartGuessPrompt:	.asciiz "\nEnter in a valid word, at least 2 characters long using the given letters: "
+StartGuessPrompt2:	.asciiz "\nEnter in a valid word, at least 2 characters long using the given letters: "
 ControlsPrompt:		.asciiz "\n1 - Rearrange Letters\n2 - Stop Guessing"
 AvailLetters:		.asciiz "\nLetters:"
 WordIncorrectPrompt:	.asciiz "\nWord not valid. Try again!"
 WordCorrectPrompt:	.asciiz "\nCorrect! Earned "
 WordCorrectPoints:	.asciiz " points! Try another!"
 YourScoreIs:		.asciiz "\nYour current score: "
+YourFinalScore:		.asciiz "\nYour final score: "
 DoneGuessingString:	.asciiz "\nWords that were possible:\n"
 WordsYouGuessedString:	.asciiz "\nWords you guessed:\n"
 GotAllWordsString:	.asciiz "\nYou guessed every word good job!"
@@ -69,7 +70,7 @@ GuessLoop:
 		li $v0, 31
 		li $a0, 69
 		li $a2, 100
-		li $a3, 64
+		li $a3, 120
 		syscall
 		j GuessLoop
 	WordCorrect:
@@ -84,7 +85,7 @@ GuessLoop:
 		li $v0, 31
 		li $a0, 72
 		li $a2, 100
-		li $a3, 64
+		li $a3, 120
 		syscall
 		lw $t0, counterCorrect
 		lw $t1, legitimateSum
@@ -104,10 +105,16 @@ GuessLoop:
 	lw $a1, legitimateSum
 	la $a0, listMain
 	jal PrintList
+	printStr(nextLineString)
 	printStr(WordsYouGuessedString)
 	lw $a1, counterCorrect
 	la $a0, listCorrect
 	jal PrintList
+	lw $t0, Score
+	printStr(YourFinalScore)
+	printInt($t0)
+	printStr(nextLineString)
+	
 	jal ClearList
 	add $v0, $zero, $zero
 	add $v1, $zero, $zero
