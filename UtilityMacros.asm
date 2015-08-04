@@ -124,4 +124,24 @@ li $v0, 1
 syscall
 .end_macro
 
+.macro PrintList(%ListAddr, %ListWordCount)
+printList:	#$a0 = listAddr, $a1 = %listWordCount # (list address, number of words saved in the list), uses t7,t1,t6
+	move $t7, %ListWordCount
+	move $t1, %ListAddr
+	printListLoop1:
+	printStr(blankByte)
+	beqz $t7, printListExit
+	subi $t7, $t7,1
+	addi $t6, $zero, 7	# set the character counter
+	printListLoop2:
+	beqz $t6, printListLoop1
+	subi $t6, $t6,1
+	lb $t2, ($t1)
+	printChar($t2)
+	addi $t1, $t1, 1
+	j printListLoop2
+	printListExit:
+	nop
+.end_macro 
+
 

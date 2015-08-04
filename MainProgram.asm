@@ -1,6 +1,6 @@
 			.data
 numberOfCharacters: 	.word	0
-welcomePrompt:		.asciiz "\n================================\n Welcome to The Nerds Jumbline! \n================================\n"
+welcomePrompt:		.asciiz "\n================================\n Welcome to The Nerds Jumbline2! \n================================\n"
 promptChar: 		.asciiz  "Choose the number of characters to play with (5,6, or 7): "
 alphabet: 		.asciiz "abcdefghijklmnopqrstuvwxyz"
 .align  3

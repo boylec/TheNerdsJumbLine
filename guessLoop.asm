@@ -15,6 +15,15 @@ GotAllWordsString:	.asciiz "\nYou guessed every word good job!"
 NewLine:		.asciiz "\n"
 Score:			.word 	0
 GuessedWord:		.space 50
+letters2:		.asciiz "\nWords with 2 letters remaining:"
+letters3:		.asciiz "\nWords with 3 letters remaining:"
+letters4:		.asciiz "\nWords with 4 letters remaining:"
+letters5:		.asciiz "\nWords with 5 letters remaining:"
+letters6:		.asciiz "\nWords with 6 letters remaining:"
+letters7:		.asciiz "\nWords with 7 letters remaining:"
+total:			.asciiz "\nTotal words:"
+correctRecord:		.asciiz "\nWords guessed right:"
+wrongRecord:		.asciiz "\nWords guessed wrong:"
 	.text
 	
 	#Loop for when users are making guesses
@@ -26,11 +35,48 @@ GuessLoop:
 	printStr(YourScoreIs)
 	lw $t0, Score
 	printInt($t0)
+	
+	lw $t8, legitimate2
+	printStr(letters2)
+	printInt($t8)
+	lw $t8, legitimate3
+	printStr(letters3)
+	printInt($t8)
+	lw $t8, legitimate4
+	printStr(letters4)
+	printInt($t8)
+	lw $t8, legitimate5
+	printStr(letters5)
+	printInt($t8)
+	lw $t8, legitimate6
+	printStr(letters6)
+	printInt($t8)
+	lw $t8, legitimate7
+	printStr(letters7)
+	printInt($t8)
+	lw $t8, legitimateSum
+	printStr(total)
+	printInt($t8)
+	# for debugging
+	la $t9, listMain
+	PrintList($t9, $t8)
+	
+	printStr(correctRecord)
+	la $t9, listCorrect
+	lw $t8, counterCorrect
+	PrintList($t9, $t8)
+	printStr(wrongRecord)
+	la $t9, listWrong
+	lw $t8, counterWrong
+	PrintList($t9, $t8)
+	
 	printStr(StartGuessPrompt2)
 	printStr(ControlsPrompt)
 	printStr(AvailLetters)
 	printStr(randomLetterArray)
 	printStr(NewLine)
+	
+	
 	
 	la $s1, GuessedWord		# Make $s1 the address of GuessedWord
 	getStr ($s1, 9)			#At this point GuessedWord stores the guessed word (that is why the address of it is stored in $s1)
@@ -76,14 +122,7 @@ GuessLoop:
 		syscall
 		j GuessLoop
 	WordCorrect:
-		la $t2, GuessedWord
-		printStr(WordCorrectPrompt)
-		printScoreWorth($t2)
-		printStr(WordCorrectPoints)
-		lw $t0, Score
-		strLength($t1,$t2)
-		add $t0,$t0, $t1
-		sw $t0, Score
+		
 		li $v0, 31
 		li $a0, 72
 		li $a1, 500
@@ -104,22 +143,23 @@ GuessLoop:
 	j StopGuess
 	
 	StopGuess:
+	lw $t8, legitimateSum
+	printStr(total)
+	printInt($t8)
 	printStr(DoneGuessingString)
-	lw $a1, legitimateSum
-	la $a0, listMain
-	jal PrintList
-	printStr(nextLineString)
-	printStr(WordsYouGuessedString)
-	lw $a1, counterCorrect
-	la $a0, listCorrect
-	jal PrintList
-	printStr(nextLineString)
-	printStr(WordsYouGuessedIncorrectString)
-	printStr(nextLineString)
-	lw $a1, counterWrong
-	la $a0, listWrong
-	jal PrintList
-	printStr(nextLineString)
+	la $t9, listMain
+	PrintList($t9, $t8)
+	
+	printStr(correctRecord)
+	la $t9, listCorrect
+	lw $t8, counterCorrect
+	PrintList($t9, $t8)
+	printStr(wrongRecord)
+	la $t9, listWrong
+	lw $t8, counterWrong
+	PrintList($t9, $t8)
+	
+	
 	lw $t0, Score
 	printStr(YourFinalScore)
 	printInt($t0)

@@ -17,6 +17,7 @@ legitimate5:	.word 0		# number of legitmates remain (not guessed) that are 5 let
 legitimate6:	.word 0		# number of legitmates remain (not guessed) that are 6 letters long
 legitimate7:	.word 0		# number of legitmates remain (not guessed) that are 7 letters long
 nextLineString:	.asciiz	 "\n"
+promptDup:	.asciiz  "You've guessed that word! Try another!"
 #		.include "wordValidator.asm"
 #		.include "UtilityMacros.asm"
 #		.include "guessLoop.asm"
@@ -86,6 +87,47 @@ ListInsertMain:		#a0 = %inputBufferReg, a1 = %wordLengthReg # used for legitimat
 	addi $sp, $sp, 24
 	
 	lw $s7, listMainPtr			# load list_global pointer. only this func can change list_global pointer.
+	
+	add $t4, $zero, $zero	# $t4 list temporary pointer
+	add $t3, $zero, $zero	# $t3 list word pointer
+	lw $t7, legitimateSum	# word counter
+	checkDupLoopMain1:
+	beqz $t7, noDuplicateMain
+	subi $t7, $t7, 1
+	addi $t6, $zero, 7	# character counter. Each word is 7 byte long
+	add $t5, $zero, $zero	# $t5 curWord pointer
+	checkDupLoopMain2:
+	beqz $t6, duplicateMain
+	subi $t6, $t6, 1
+	lb $t1, listMain($t4)
+	lb $t2, curWord($t5)
+	bne $t1, $t2, checkNextDupMain
+	addi $t4, $t4, 1
+	addi $t5, $t5, 1
+	j checkDupLoopMain2
+	
+	noDuplicateMain:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	jal UpdateCounterForListInsertMain
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	j endDupCheckMain
+	duplicateMain:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	nop
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	j endDupCheckMain
+	checkNextDupMain:
+	addi $t3, $t3,7
+	move $t4, $t3
+	j checkDupLoopMain1
+	
+	endDupCheckMain:
+	nop
+	jr $ra
 	
 UpdateCounterForListInsertMain:
 	lw $t0, legitimateSum
@@ -166,7 +208,60 @@ ListInsertCorrect:	#a0 = %inputBufferRegister, $a1 = %wordLengthReg # for correc
 	
 	lw $s7, listCorrectPtr
 	
+	checkDuplicate:	#a0 = %inputBufferReg, $a1 = %wordLengthReg, $s1 = %regToStoreRightOrWrong	# compare user input to list, and insert user guessing into cordinate lists
+
+	add $t4, $zero, $zero	# $t4 list temporary pointer
+	add $t3, $zero, $zero	# $t3 list word pointer
+	lw $t7, counterCorrect	# word counter
+	checkDupLoop1:
+	beqz $t7, noDuplicate
+	subi $t7, $t7, 1
+	addi $t6, $zero, 7	# character counter. Each word is 7 byte long
+	add $t5, $zero, $zero	# $t5 curWord pointer
+	checkDupLoop2:
+	beqz $t6, duplicate
+	subi $t6, $t6, 1
+	lb $t1, listCorrect($t4)
+	lb $t2, curWord($t5)
+	bne $t1, $t2, checkNextDup
+	addi $t4, $t4, 1
+	addi $t5, $t5, 1
+	j checkDupLoop2
+	
+	noDuplicate:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	jal UpdateCounterForListInsertCorrect
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	j endDupCheck
+	duplicate:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	printStr(promptDup)
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	j endDupCheck
+	checkNextDup:
+	addi $t3, $t3,7
+	move $t4, $t3
+	j checkDupLoop1
+	
+	endDupCheck:
+	nop
+	jr $ra 
+	
 UpdateCounterForListInsertCorrect:
+	#update score
+	la $t2, GuessedWord
+	printStr(WordCorrectPrompt)
+	printScoreWorth($t2)
+	printStr(WordCorrectPoints)
+	lw $t0, Score
+	strLength($t1,$t2)
+	add $t0,$t0, $t1
+	sw $t0, Score
+	
 	lw $t0, counterCorrect
 	addi $t0, $t0, 1
 	sw $t0, counterCorrect
@@ -267,23 +362,21 @@ listInsertForListInsertWrong:
 
 
 CompareToList:	#a0 = %inputBufferReg, $a1 = %wordLengthReg, $s1 = %regToStoreRightOrWrong	# compare user input to list, and insert user guessing into cordinate lists
-	addi $sp, $sp, -24
+	addi $sp, $sp, -20
 	sw $ra, 0($sp)
 	sw $t1, 4($sp)
 	sw $t5, 8($sp)
 	sw $t6, 12($sp)
 	sw $a0, 16($sp)
-	sw $a1, 20($sp)
 	jal CopyWord	 #a0=%wordAddrReg, $a1=%wordLengthReg, uses t5, t6, t1, ra
 	lw $ra, 0($sp)
 	lw $t1, 4($sp)
 	lw $t5, 8($sp)
 	lw $t6, 12($sp)
 	lw $a0, 16($sp)
-	lw $a1, 20($sp)
-	addi $sp, $sp, 24
+	addi $sp, $sp, 20
 	
-	add $t5, $zero, $zero	# $t5 curWord pointer
+	
 	add $t4, $zero, $zero	# $t4 list temporary pointer
 	add $t3, $zero, $zero	# $t3 list word pointer
 	lw $t7, legitimateSum	# word counter
@@ -303,117 +396,46 @@ CompareToList:	#a0 = %inputBufferReg, $a1 = %wordLengthReg, $s1 = %regToStoreRig
 	j compareLoop2
 	
 	guessCorrect:
-
-	addi $sp, $sp, -44
+	addi $sp, $sp, -4
 	sw $ra, 0($sp)
-	sw $a0, 4($sp)
-	sw $a1, 8($sp)
-	sw $t0, 12($sp)
-	sw $t1, 16($sp)
-	sw $t2, 20($sp)
-	sw $t3, 24($sp)
-	sw $t4, 28($sp)
-	sw $t5, 32($sp)
-	sw $t6, 36($sp)
-	sw $t7, 40($sp)
 	jal ListInsertCorrect
 	lw $ra, 0($sp)
-	lw $a0, 4($sp)
-	lw $a1, 8($sp)
-	lw $t0, 12($sp)
-	lw $t1, 16($sp)
-	lw $t2, 20($sp)
-	lw $t3, 24($sp)
-	lw $t4, 28($sp)
-	lw $t5, 32($sp)
-	lw $t6, 36($sp)
-	lw $t7, 40($sp)
-	addi $sp, $sp, 44
+	addi $sp, $sp, 4
 	li $s1, 1
-	
-	#Replace the entry in the main list with ---------
-	li $t1, 45
-	addi $t5, $zero, 7
-	subi $t4, $t4, 7
-	deleteMainListEntryLoop:
-	beqz $t5, doneDeletingMainListEntry
-	sb $t1, listMain($t4)
-	addi $t4, $t4, 1
-	subi $t5, $t5, 1
-	j deleteMainListEntryLoop
-	doneDeletingMainListEntry:
-	#Done deleting guessed word from ListMain
-
 	j endCompare
 	notFound:
-	addi $sp, $sp, -44
+	addi $sp, $sp, -4
 	sw $ra, 0($sp)
-	sw $a0, 4($sp)
-	sw $a1, 8($sp)
-	sw $t0, 12($sp)
-	sw $t1, 16($sp)
-	sw $t2, 20($sp)
-	sw $t3, 24($sp)
-	sw $t4, 28($sp)
-	sw $t5, 32($sp)
-	sw $t6, 36($sp)
-	sw $t7, 40($sp)
 	jal ListInsertWrong
 	lw $ra, 0($sp)
-	lw $a0, 4($sp)
-	lw $a1, 8($sp)
-	lw $t0, 12($sp)
-	lw $t1, 16($sp)
-	lw $t2, 20($sp)
-	lw $t3, 24($sp)
-	lw $t4, 28($sp)
-	lw $t5, 32($sp)
-	lw $t6, 36($sp)
-	lw $t7, 40($sp)
-	addi $sp, $sp, 44
+	addi $sp, $sp, 4
 	li $s1, 0
 	j endCompare
 	checkNext:
 	addi $t3, $t3,7
 	move $t4, $t3
 	j compareLoop1
-	endCompare:
-	add $t1, $zero, $zero
-	add $t2, $zero, $zero
-	add $t3, $zero, $zero
-	add $t4, $zero, $zero
-	add $t5, $zero, $zero
-	add $t6, $zero, $zero
-	add $t7, $zero, $zero
-	nop
-jr $ra 
 	
+	endCompare:
+	nop
+	jr $ra 
+
 PrintList:	#$a0 = listAddr, $a1 = %listWordCount # (list address, number of words saved in the list), uses t7,t1,t6
-	li $t8, 5
 	move $t7, $a1
-	move $t0, $a0
+	move $t1, $a0
 	printListLoop1:
 	beqz $t7, printListExit
-	subi $t7, $t7, 1
-	add $t6, $zero, $zero	# set the character counter
-	beqz $t8, doNewLine
-	subi $t8, $t8, 1
+	subi $t7, $t7,1
+	addi $t6, $zero, 7	# set the character counter
 	printListLoop2:
-	beq  $t6, 7, doSpace
-	addi $t6, $t6,1
-	lb $t1, ($t0)
+	beqz $t6, printListLoop1
+	subi $t6, $t6,1
 	printChar($t1)
-	addi $t0, $t0, 1
+	addi $t1, $t1, 1
 	j printListLoop2
-	doNewLine:
-	printStr(nextLineString)
-	li $t8, 5
-	j printListLoop2
-	doSpace:
-	printStr(blankByte)
-	j printListLoop1
 	printListExit:
-jr $ra 
+	nop
+	jr $ra 
 
 ClearList:
 # this function does not really clear the list. it merely set the counters back to zero. 
