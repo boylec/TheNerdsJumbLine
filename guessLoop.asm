@@ -10,6 +10,7 @@ YourScoreIs:		.asciiz "\nYour current score: "
 YourFinalScore:		.asciiz "\nYour final score: "
 DoneGuessingString:	.asciiz "\nWords that were possible:\n"
 WordsYouGuessedString:	.asciiz "\nWords you guessed:\n"
+WordsYouGuessedIncorrectString: .asciiz "\nWords that you guessed incorrectly:\m"
 GotAllWordsString:	.asciiz "\nYou guessed every word good job!"
 NewLine:		.asciiz "\n"
 Score:			.word 	0
@@ -69,7 +70,8 @@ GuessLoop:
 		printStr(WordIncorrectPrompt)
 		li $v0, 31
 		li $a0, 69
-		li $a2, 100
+		li $a1, 500
+		li $a2, 63
 		li $a3, 120
 		syscall
 		j GuessLoop
@@ -84,7 +86,8 @@ GuessLoop:
 		sw $t0, Score
 		li $v0, 31
 		li $a0, 72
-		li $a2, 100
+		li $a1, 500
+		li $a2, 63
 		li $a3, 120
 		syscall
 		lw $t0, counterCorrect
@@ -110,6 +113,13 @@ GuessLoop:
 	lw $a1, counterCorrect
 	la $a0, listCorrect
 	jal PrintList
+	printStr(nextLineString)
+	printStr(WordsYouGuessedIncorrectString)
+	printStr(nextLineString)
+	lw $a1, counterWrong
+	la $a0, listWrong
+	jal PrintList
+	printStr(nextLineString)
 	lw $t0, Score
 	printStr(YourFinalScore)
 	printInt($t0)
